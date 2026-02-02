@@ -1,0 +1,12 @@
+demo/model/Autority.class
+demo/service/AuthService.class
+demo/config/SecurityConfig.class
+demo/DemoApp.class
+demo/controller/ProductRestController.class
+demo/repository/TokenRepository.class
+demo/repository/IdentityRepository.class
+demo/repository/CredentialRepository.class
+demo/controller/IdentifyController.class
+demo/model/Product.class
+demo/model/Identity.class
+demo/model/Credential.class

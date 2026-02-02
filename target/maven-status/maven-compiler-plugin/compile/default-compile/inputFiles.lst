@@ -1,3 +1,12 @@
-C:\Users\ougai\OneDrive\Bureau\M1-S2\Software\Labs\StartSpring\src\main\java\demo\controller\ProductRestController.java
-C:\Users\ougai\OneDrive\Bureau\M1-S2\Software\Labs\StartSpring\src\main\java\demo\DemoApp.java
-C:\Users\ougai\OneDrive\Bureau\M1-S2\Software\Labs\StartSpring\src\main\java\demo\model\Product.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/DemoApp.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/config/SecurityConfig.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/controller/IdentifyController.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/controller/ProductRestController.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/model/Autority.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/model/Credential.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/model/Identity.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/model/Product.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/repository/CredentialRepository.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/repository/IdentityRepository.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/repository/TokenRepository.java
+/mnt/c/Users/camar/OneDrive/Documents/Master 1/Semestre 2/Introduction to architecture/Labs/Spring-Auth/src/main/java/demo/service/AuthService.java
