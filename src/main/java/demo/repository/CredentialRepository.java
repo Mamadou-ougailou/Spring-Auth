@@ -8,10 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface CredentialRepository extends JpaRepository<Credential, Long> {
-
-    // Trouver un credential par email
-    Optional<Credential> findByEmail(String email);
-
-    // Supprimer par email
-    void deleteByEmail(String email);
+    
+    // Find a role by name (e.g. "ROLE_ADMIN") so we don't create duplicates
+    Optional<Credential> findByName(String name);
+    
+    boolean existsByName(String name);
 }

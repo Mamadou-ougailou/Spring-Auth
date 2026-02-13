@@ -10,18 +10,15 @@ public class Credential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // This stores the actual role name, e.g., "ROLE_ADMIN", "ROLE_USER"
     @Column(unique = true, nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
+    private String name;
 
     public Credential() {
     }
 
-    public Credential(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public Credential(String name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -32,19 +29,11 @@ public class Credential {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setName(String name) {
+        this.name = name;
     }
 }
