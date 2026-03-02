@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: notification
+
+  # --- RabbitMQ ---
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  # --- SMTP (MailHog) ---
+  mail:
+    host: localhost
+    port: 1025
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+# --- Application MQ settings ---
+app:
+  mq:
+    exchange: auth.events
+    queue:
+      userRegistered: notification.user-registered
+    rk:
+      userRegistered: auth.user-registered
