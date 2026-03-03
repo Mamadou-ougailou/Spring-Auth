@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  # --- PostgreSQL ---
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authdb
+    username: auth
+    password: auth
+    driver-class-name: org.postgresql.Driver
+
+  # --- Hibernate ---
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  # --- RabbitMQ ---
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+app:
+  mq:
+    exchange: auth.events
+    rk:
+      userRegistered: auth.user-registered
