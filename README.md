@@ -98,3 +98,10 @@ via `app.verification.base-url` in the notification service.
 | RabbitMQ | http://localhost:15672 | `guest` / `guest`           |
 | Mailpit  | http://localhost:8025  | —                           |
 | pgAdmin  | http://localhost:5050  | `admin@admin.com` / `admin` |
+
+## Authors
+- BIERHOFF Theolien
+- CAMARA Ibrahima
+- DIALLO Mamadou Ougailou
+- JULES Stevenson
+
