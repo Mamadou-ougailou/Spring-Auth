@@ -3,6 +3,7 @@ package com.example.notification.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${app.verification.base-url}")
+    private String baseUrl;
+
     /**
      * Sends a verification e-mail containing the verification link.
      *
@@ -24,7 +28,7 @@ public class EmailService {
      */
     public void sendVerificationEmail(String to, String tokenId, String tokenClear) {
         String verificationLink = String.format(
-                "http://localhost:8080/verify?tokenId=%s&t=%s", tokenId, tokenClear);
+                "%s/verify?tokenId=%s&t=%s", baseUrl, tokenId, tokenClear);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreply@auth-service.local");

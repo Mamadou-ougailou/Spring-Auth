@@ -20,8 +20,10 @@ spring:
       mail.smtp.auth: false
       mail.smtp.starttls.enable: false
 
-# --- Application MQ settings ---
+# --- Application settings ---
 app:
+  verification:
+    base-url: http://localhost
   mq:
     exchange: auth.events
     queue:
