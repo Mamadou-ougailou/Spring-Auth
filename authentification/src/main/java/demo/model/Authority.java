@@ -20,10 +20,9 @@ public class Authority {
         MOODLE
     }
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private Provider provider; // provider of the connection (e.g., "email", "google", "github")
-
     @Column(nullable = false)
     @JsonIgnore
     private String secret; // password for email provider ...

@@ -3,7 +3,6 @@ package demo.controller;
 import demo.model.Identity;
 import demo.model.Token;
 import demo.service.AuthentificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +13,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthentificationController {
+    private final AuthentificationService authService;
 
-    @Autowired
-    private AuthentificationService authService;
+    public AuthentificationController(AuthentificationService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/email/login")
     public ResponseEntity<Object> emailLogin(@RequestBody Map<String, String> body) {
