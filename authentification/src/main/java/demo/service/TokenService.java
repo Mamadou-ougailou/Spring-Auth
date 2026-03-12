@@ -5,12 +5,13 @@ import demo.exception.UnauthorizedException;
 import demo.model.Token;
 import demo.repository.TokenRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 /**
  * Centralised read/guard helpers for {@link Token}.
  * Used by AuthentificationService and AdminService.
  */
 @Service
+@Transactional(readOnly = true)
 public class TokenService {
 
     private final TokenRepository tokenRepository;

@@ -6,12 +6,15 @@ import demo.model.Authority;
 import demo.model.Identity;
 import demo.repository.IdentityRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Centralised read/guard helpers for {@link Identity}.
  * Used by AuthentificationService, RegistrationService and AdminService.
  */
+
 @Service
+@Transactional(readOnly = true)
 public class IdentityService {
 
     private final IdentityRepository identityRepository;

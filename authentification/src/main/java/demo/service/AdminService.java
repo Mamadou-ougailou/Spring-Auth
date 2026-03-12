@@ -30,11 +30,13 @@ public class AdminService {
         this.tokenService = tokenService;
     }
 
+    @Transactional
     public void deleteUser(String email) {
         Identity identity = identityService.findByEmail(email);
         identityRepository.delete(identity);
     }
 
+    @Transactional
     public void addCredential(String name){
         if(credentialRepository.findByName(name).isPresent()){
             throw new RuntimeException("Credential with name '" + name + "' already exists");
@@ -43,6 +45,7 @@ public class AdminService {
         credentialRepository.save(credential);
     }
     
+    @Transactional
     public void addRoleToUser(String email, String roleName) {
         Identity identity = identityService.findByEmail(email);
 
@@ -62,6 +65,7 @@ public class AdminService {
         identityRepository.save(identity);
     }
 
+    @Transactional
     public void removeRoleFromUser(String email, String roleName) {
         Identity identity = identityService.findByEmail(email);
 
@@ -74,6 +78,7 @@ public class AdminService {
         identityRepository.save(identity);
     }
 
+    @Transactional
     public void addAuthorityToUser(String email, Authority.Provider provider, String secret) {
         Identity identity = identityService.findByEmail(email);
         identityService.ensureVerified(identity);
@@ -90,6 +95,7 @@ public class AdminService {
         identityRepository.save(identity);
     }
 
+    @Transactional
     public void removeAuthorityFromUser(String email, Authority.Provider provider) {
         Identity identity = identityService.findByEmail(email);
 
@@ -102,6 +108,7 @@ public class AdminService {
         identityRepository.save(identity);
     }
 
+    @Transactional
     public void deleteToken(String token) {
         Token tokenEntity = tokenService.findByValue(token);
         tokenRepository.delete(tokenEntity);
@@ -120,14 +127,17 @@ public class AdminService {
         return tokenRepository.findAllIdentitiesWithValidToken(now);
     }
 
+    @Transactional(readOnly = true)
     public List<Credential> getAllCredentials() {
         return credentialRepository.findAll();
     }
 
+    @Transactional(readOnly = true) 
     public List<Authority> getAllAuthorities() {
         return authorityRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Token> getAllTokens() {
         return tokenRepository.findAll();
     }
