@@ -1,12 +1,14 @@
 package demo.controller;
 
+import demo.dto.AddAuthorityRequest;
+import demo.dto.AddCredentialRequest;
+import demo.dto.AddRoleRequest;
 import demo.model.*;
 import demo.service.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -43,25 +45,15 @@ public class AdminController {
     }
 
     @PostMapping("/credentials")
-    public ResponseEntity<Object> addCredential(@RequestBody Map<String, String> body) {
-        String name = body.get("name");
-        if (name == null) {
-            return new ResponseEntity<>("name is required", HttpStatus.BAD_REQUEST);
-        }
-        adminService.addCredential(name);
+    public ResponseEntity<Object> addCredential(@Valid @RequestBody AddCredentialRequest request) {
+        adminService.addCredential(request.name());
         return new ResponseEntity<>("Credential added successfully", HttpStatus.OK);
     }
 
     @PostMapping("/identities/{email}/credentials")
     public ResponseEntity<Object> addCredentialToIdentity(@PathVariable String email,
-            @RequestBody Map<String, String> body) {
-        String roleName = body.get("roleName");
-
-        if (roleName == null) {
-            return new ResponseEntity<>("roleName is required", HttpStatus.BAD_REQUEST);
-        }
-
-        adminService.addRoleToUser(email, roleName);
+            @Valid @RequestBody AddRoleRequest request) {
+        adminService.addRoleToUser(email, request.roleName());
         return new ResponseEntity<>("Role added successfully", HttpStatus.OK);
     }
 
@@ -81,16 +73,9 @@ public class AdminController {
 
     @PostMapping("/identities/{email}/authorities")
     public ResponseEntity<Object> addAuthorityToIdentity(@PathVariable String email,
-            @RequestBody Map<String, String> body) {
-        String providerStr = body.get("provider");
-        String secret = body.get("secret");
-
-        if (providerStr == null || secret == null) {
-            return new ResponseEntity<>("provider and secret are required", HttpStatus.BAD_REQUEST);
-        }
-
-        Authority.Provider provider = Authority.Provider.valueOf(providerStr.toUpperCase());
-        adminService.addAuthorityToUser(email, provider, secret);
+            @Valid @RequestBody AddAuthorityRequest request) {
+        Authority.Provider provider = Authority.Provider.valueOf(request.provider().toUpperCase());
+        adminService.addAuthorityToUser(email, provider, request.secret());
         return new ResponseEntity<>("Authority added successfully", HttpStatus.OK);
     }
 
