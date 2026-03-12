@@ -13,7 +13,6 @@ import demo.repository.VerificationTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,24 +32,24 @@ public class RegistrationService {
 
     /** Verification token time-to-live (30 minutes). */
     private static final Duration TOKEN_TTL = Duration.ofMinutes(30);
-
-    @Autowired
-    private IdentityRepository identityRepository;
-
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final IdentityRepository identityRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RabbitTemplate rabbitTemplate;
 
     @Value("${app.mq.exchange}")
     private String exchange;
 
     @Value("${app.mq.rk.userRegistered}")
     private String userRegisteredRoutingKey;
+
+    public RegistrationService(IdentityRepository identityRepository, VerificationTokenRepository verificationTokenRepository,
+                               PasswordEncoder passwordEncoder, RabbitTemplate rabbitTemplate) {
+        this.identityRepository = identityRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     /* ================================================================
      *  POST /register
@@ -69,7 +68,9 @@ public class RegistrationService {
 
         // 2. Attach EMAIL authority (hashed password)
         String hashedPassword = passwordEncoder.encode(password);
-        identity.addAuthority(new Authority(Authority.Provider.EMAIL, hashedPassword));
+    
+        Authority authority = new Authority(Authority.Provider.EMAIL, hashedPassword);
+        identity.addAuthority(authority);
         identity = identityRepository.save(identity);
 
         // 3. Generate verification token

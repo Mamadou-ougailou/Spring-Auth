@@ -7,22 +7,21 @@ import demo.model.Identity;
 import demo.model.Token;
 import demo.repository.IdentityRepository;
 import demo.repository.TokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthentificationService {
+    private final IdentityRepository identityRepository;
+    private final TokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private IdentityRepository identityRepository;
-
-    @Autowired
-    private TokenRepository tokenRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AuthentificationService(IdentityRepository identityRepository, TokenRepository tokenRepository, PasswordEncoder passwordEncoder) {
+        this.identityRepository = identityRepository;
+        this.tokenRepository = tokenRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // Token validity: 24 hours (in milliseconds)
     private static final long TOKEN_VALIDITY = 24 * 60 * 60 * 1000;

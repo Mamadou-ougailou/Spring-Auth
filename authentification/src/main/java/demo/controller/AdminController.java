@@ -2,7 +2,6 @@ package demo.controller;
 
 import demo.model.*;
 import demo.service.AdminService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +11,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    private final AdminService adminService;
 
-    @Autowired
-    private AdminService adminService;
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     // ===== IDENTITY MANAGEMENT =====
 
@@ -39,6 +40,16 @@ public class AdminController {
     @GetMapping("/credentials")
     public ResponseEntity<Object> getAllCredentials() {
         return new ResponseEntity<>(adminService.getAllCredentials(), HttpStatus.OK);
+    }
+
+    @PostMapping("/credentials")
+    public ResponseEntity<Object> addCredential(@RequestBody Map<String, String> body) {
+        String name = body.get("name");
+        if (name == null) {
+            return new ResponseEntity<>("name is required", HttpStatus.BAD_REQUEST);
+        }
+        adminService.addCredential(name);
+        return new ResponseEntity<>("Credential added successfully", HttpStatus.OK);
     }
 
     @PostMapping("/identities/{email}/credentials")

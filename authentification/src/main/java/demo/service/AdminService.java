@@ -3,7 +3,6 @@ package demo.service;
 import demo.model.*;
 import demo.repository.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,14 +11,19 @@ import java.util.Set;
 
 @Service
 public class AdminService {
-    @Autowired
-    private CredentialRepository credentialRepository;
-    @Autowired
-    private IdentityRepository identityRepository;
-    @Autowired
-    private AuthorityRepository authorityRepository;
-    @Autowired
-    private TokenRepository tokenRepository;
+
+    private final CredentialRepository credentialRepository;
+    private final IdentityRepository identityRepository;
+    private final AuthorityRepository authorityRepository;
+    private final TokenRepository tokenRepository;
+
+    public AdminService(CredentialRepository credentialRepository, IdentityRepository identityRepository,
+                        AuthorityRepository authorityRepository, TokenRepository tokenRepository) {
+        this.credentialRepository = credentialRepository;
+        this.identityRepository = identityRepository;
+        this.authorityRepository = authorityRepository;
+        this.tokenRepository = tokenRepository;
+    }
 
     public void deleteUser(String email) {
         Identity identity = identityRepository.findByEmail(email)
@@ -28,6 +32,14 @@ public class AdminService {
         identityRepository.delete(identity);
     }
 
+    public void addCredential(String name){
+        if(credentialRepository.findByName(name).isPresent()){
+            throw new RuntimeException("Credential with name '" + name + "' already exists");
+        }
+        Credential credential = new Credential(name);
+        credentialRepository.save(credential);
+    }
+    
     public void addRoleToUser(String email, String roleName) {
         Identity identity = identityRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));

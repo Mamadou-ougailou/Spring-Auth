@@ -27,10 +27,11 @@ public class GlobalExceptionHandler {
     }
 
     /** Catch-all for unexpected errors. */
+    // build the error also 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUnexpected(Exception ex) {
         log.error("Unexpected error", ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred");
     }
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message) {
