@@ -26,8 +26,18 @@ public class GlobalExceptionHandler {
         return buildResponse(ex.getStatus(), ex.getMessage());
     }
 
+    /** Handle validation errors from @Valid. */
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidation(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .reduce((a, b) -> a + "; " + b)
+                .orElse("Validation failed");
+        log.warn("[400] {}", message);
+        return buildResponse(HttpStatus.BAD_REQUEST, message);
+    }
+
     /** Catch-all for unexpected errors. */
-    // build the error also 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUnexpected(Exception ex) {
         log.error("Unexpected error", ex);
