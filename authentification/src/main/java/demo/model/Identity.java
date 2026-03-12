@@ -22,14 +22,12 @@ public class Identity {
     @Column(nullable = false)
     private boolean verified = false;
 
-    // --- 1. TOKENS (Session/JWT) ---
     // Owner: Token entity (via 'identity' field)
     @OneToMany(mappedBy = "identity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("identity-tokens")
     private List<Token> tokens = new ArrayList<>();
 
-    // --- 2. CREDENTIALS (Permissions/Roles) ---
-    // Owner: Identity (This creates a join table 'identity_credentials')
+    // Owner: Identity entity (via 'credentials' field)
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "identity_credentials", joinColumns = @JoinColumn(name = "identity_id"), inverseJoinColumns = @JoinColumn(name = "credential_id"))
     private List<Credential> credentials = new ArrayList<>();
