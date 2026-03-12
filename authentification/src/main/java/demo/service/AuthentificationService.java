@@ -1,12 +1,10 @@
 package demo.service;
 
-import demo.exception.NotFoundException;
 import demo.exception.UnauthorizedException;
 import demo.model.Authority;
 import demo.model.Identity;
 import demo.model.Token;
 import demo.repository.IdentityRepository;
-import demo.repository.TokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthentificationService {
     private final IdentityRepository identityRepository;
-    private final TokenRepository tokenRepository;
+    private final IdentityService identityService;
+    private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthentificationService(IdentityRepository identityRepository, TokenRepository tokenRepository, PasswordEncoder passwordEncoder) {
+    public AuthentificationService(IdentityRepository identityRepository,
+                                   IdentityService identityService,
+                                   TokenService tokenService,
+                                   PasswordEncoder passwordEncoder) {
         this.identityRepository = identityRepository;
-        this.tokenRepository = tokenRepository;
+        this.identityService = identityService;
+        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -28,38 +31,25 @@ public class AuthentificationService {
 
     @Transactional
     public Token emailLogin(String email, String password) {
-        // 1. Find the identity by email
-        Identity identity = identityRepository.findByEmail(email)
-                .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
+        Identity identity = identityService.findByEmail(email);
+        Authority emailAuthority = identityService.findEmailAuthority(identity);
+        identityService.ensureVerified(identity);
 
-        // 2. Find the EMAIL authority for this identity
-        Authority emailAuthority = identity.getAuthorities().stream()
-                .filter(a -> a.getProvider() == Authority.Provider.EMAIL)
-                .findFirst()
-                .orElseThrow(() -> new UnauthorizedException("No email login configured for this user"));
-
-        //3. Check if the user is verified (for registration flow)
-        if (!identity.isVerified()) {
-            throw new UnauthorizedException("Email not verified. Please check your inbox.");
-        }
-        // 4. Verify the password against the stored hashed secret
         if (!passwordEncoder.matches(password, emailAuthority.getSecret())) {
             throw new UnauthorizedException("Invalid email or password");
         }
 
-        // 4. Create and persist a new token
         long expirationTime = System.currentTimeMillis() + TOKEN_VALIDITY;
         Token token = new Token(identity, expirationTime);
-        identity.addToken(token); // maintains bidirectional relationship
-        identityRepository.save(identity); // cascades to save the token
+        identity.addToken(token);
+        identityRepository.save(identity);
 
         return token;
     }
 
     @Transactional
     public void logout(String tokenValue) {
-        Token token = tokenRepository.findByToken(tokenValue)
-                .orElseThrow(() -> new NotFoundException("Token not found"));
+        Token token = tokenService.findByValue(tokenValue);
 
         // Remove from the identity's token list (orphanRemoval will delete it)
         token.getIdentity().getTokens().remove(token);
@@ -68,25 +58,14 @@ public class AuthentificationService {
 
     @Transactional
     public void changePassword(String email, String oldPassword, String newPassword) {
-        // 1. Find the identity
-        Identity identity = identityRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        Identity identity = identityService.findByEmail(email);
+        Authority emailAuthority = identityService.findEmailAuthority(identity);
+        identityService.ensureVerified(identity);
 
-        // 2. Find the EMAIL authority
-        Authority emailAuthority = identity.getAuthorities().stream()
-                .filter(a -> a.getProvider() == Authority.Provider.EMAIL)
-                .findFirst()
-                .orElseThrow(() -> new UnauthorizedException("No email login configured for this user"));
-        //3. Check if the user is verified (for registration flow)
-        if (!identity.isVerified()) {
-            throw new UnauthorizedException("Email not verified. Please check your inbox.");
-        }
-        // 4. Verify the old password
         if (!passwordEncoder.matches(oldPassword, emailAuthority.getSecret())) {
             throw new UnauthorizedException("Old password is incorrect");
         }
 
-        // 4. Update with the new hashed password
         emailAuthority.setSecret(passwordEncoder.encode(newPassword));
         identityRepository.save(identity);
     }
@@ -96,13 +75,7 @@ public class AuthentificationService {
      */
     @Transactional(readOnly = true)
     public Identity getUserInfo(String tokenValue) {
-        Token token = tokenRepository.findByToken(tokenValue)
-                .orElseThrow(() -> new NotFoundException("Token not found"));
-
-        if (token.isExpired()) {
-            throw new UnauthorizedException("Token has expired");
-        }
-
+        Token token = tokenService.findValidToken(tokenValue);
         return token.getIdentity();
     }
 }
