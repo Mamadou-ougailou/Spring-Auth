@@ -56,13 +56,12 @@ public class RegistrationService {
      * ================================================================ */
 
     @Transactional
-    public Identity register(String email, String password) {
+    public Identity register(String name, String email, String password) {
         if (identityRepository.existsByEmail(email)) {
             throw new ConflictException("A user with this e-mail already exists");
         }
 
         // 1. Create Identity (verified = false)
-        String name = email.split("@")[0]; // derive a display name from the e-mail
         Identity identity = new Identity(email, name);
         identity.setVerified(false);
 

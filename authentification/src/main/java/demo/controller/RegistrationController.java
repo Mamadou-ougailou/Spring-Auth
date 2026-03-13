@@ -25,7 +25,7 @@ public class RegistrationController {
      */
     @PostMapping("/register")
     public ResponseEntity<Object> register(@Valid @RequestBody LoginRequest request) {
-        Identity identity = registrationService.register(request.email(), request.password());
+        Identity identity = registrationService.register(request.name(), request.email(), request.password());
 
         return new ResponseEntity<>(
                 Map.of("message", "User registered. Check your e-mail to verify your account.",

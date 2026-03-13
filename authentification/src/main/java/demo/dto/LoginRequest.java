@@ -9,6 +9,9 @@ public record LoginRequest(
         @Email(message = "email must be valid")
         String email,
 
+        @NotBlank(message = "name is required")
+        String name,
+
         @NotBlank(message = "password is required")
         String password
 ) {}
