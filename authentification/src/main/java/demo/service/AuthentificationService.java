@@ -78,4 +78,40 @@ public class AuthentificationService {
         Token token = tokenService.findValidToken(tokenValue);
         return token.getIdentity();
     }
+
+    @Transactional(readOnly = true)
+    public boolean hasAccessToTargetService(Identity identity, String targetService) {
+        if (targetService == null || targetService.isBlank()) {
+            return true;
+        }
+
+        String normalizedTarget = targetService.trim().toUpperCase();
+
+        if (!normalizedTarget.equals("A") && !normalizedTarget.equals("B")) {
+            return false;
+        }
+
+        return identity.getCredentials().stream()
+                .map(credential -> credential.getName() == null ? "" : credential.getName().trim().toUpperCase())
+            .anyMatch(role -> role.equals(normalizedTarget));
+    }
+
+    /**
+     * Validate the raw token and ensure the owner is authorized for the given target service.
+     * Throws UnauthorizedException (401) when token is missing/invalid/expired and
+     * ForbiddenException (403) when the user lacks the required role for the target.
+     */
+    @Transactional(readOnly = true)
+    public void validateTokenForTarget(String tokenValue, String targetService) {
+        if (tokenValue == null || tokenValue.isBlank()) {
+            throw new demo.exception.UnauthorizedException("Missing token");
+        }
+
+        Token token = tokenService.findValidToken(tokenValue);
+        Identity identity = token.getIdentity();
+
+        if (!hasAccessToTargetService(identity, targetService)) {
+            throw new demo.exception.ForbiddenException("User not authorized for target service: " + targetService);
+        }
+    }
 }

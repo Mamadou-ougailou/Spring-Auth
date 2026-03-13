@@ -1,6 +1,6 @@
 package demo.controller;
 
-import demo.dto.LoginRequest;
+import demo.dto.RegisterRequest;
 import demo.model.Identity;
 import demo.service.RegistrationService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class RegistrationController {
      * Body: { "email": "...", "password": "..." }
      */
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<Object> register(@Valid @RequestBody RegisterRequest request) {
         Identity identity = registrationService.register(request.name(), request.email(), request.password());
 
         return new ResponseEntity<>(

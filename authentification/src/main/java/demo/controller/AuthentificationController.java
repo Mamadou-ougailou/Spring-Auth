@@ -57,18 +57,17 @@ public class AuthentificationController {
 
     /**
      * GET /auth/validate — called by Nginx auth_request subrequest.
-     * Returns 200 if the token is valid, 401 otherwise.
+     * Returns 200 if the token is valid and the user is authorized for the
+     * requested target service (header `X-Target-Service`), 401 if token invalid,
+     * 403 if authenticated but not authorized for the target service.
      */
     @GetMapping("/validate")
-    public ResponseEntity<Void> validate(@RequestHeader(value = "Authorization", required = false) String token) {
-        if (token == null || token.isBlank()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        try {
-            authService.getUserInfo(token);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Void> validate(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestHeader(value = "X-Target-Service", required = false) String targetService) {
+        // Delegate validation + authorization to the service. GlobalExceptionHandler
+        // will translate thrown ApiException subclasses into proper HTTP responses.
+        authService.validateTokenForTarget(token, targetService);
+        return ResponseEntity.ok().build();
     }
 }
