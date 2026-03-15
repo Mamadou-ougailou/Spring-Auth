@@ -5,6 +5,7 @@ import demo.dto.LoginRequest;
 import demo.model.Identity;
 import demo.model.Token;
 import demo.service.AuthentificationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Login, token validation and account session endpoints")
 public class AuthentificationController {
     private final AuthentificationService authService;
 

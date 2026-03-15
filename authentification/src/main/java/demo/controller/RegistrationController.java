@@ -3,6 +3,7 @@ package demo.controller;
 import demo.dto.RegisterRequest;
 import demo.model.Identity;
 import demo.service.RegistrationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Registration", description = "User registration and e-mail verification")
 public class RegistrationController {
 
     private final RegistrationService registrationService;

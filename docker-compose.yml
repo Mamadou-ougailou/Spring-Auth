@@ -61,6 +61,8 @@ services:
   auth-service:
     build: ./authentification
     container_name: auth-service
+    ports:
+      - "8080:8080"
     expose:
       - "8080"
     environment:

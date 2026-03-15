@@ -31,6 +31,17 @@ Returns **200** → forwarded, otherwise → **403**.
 sudo docker compose up --build -d
 ```
 
+## API Documentation (Swagger / OpenAPI)
+- Swagger UI (direct auth-service): `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON (direct auth-service): `http://localhost:8080/v3/api-docs`
+- (Optional via Nginx): `http://localhost/swagger-ui/index.html` and `http://localhost/v3/api-docs`
+
+To test protected endpoints in Swagger UI:
+1. Login using `POST /auth/email/login` and copy the token.
+2. Click **Authorize**.
+3. Enter the raw token value in the `bearerAuth` field.
+4. Call secured endpoints (`/auth/me`, `/admin/*`, etc.).
+
 ## API Endpoints
 ### Public (no token required)
 | Method | Path                          | Description                          |

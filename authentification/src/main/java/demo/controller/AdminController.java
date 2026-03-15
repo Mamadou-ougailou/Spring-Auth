@@ -5,6 +5,7 @@ import demo.dto.AddCredentialRequest;
 import demo.dto.AddRoleRequest;
 import demo.model.*;
 import demo.service.AdminService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Admin", description = "Administrative endpoints for users, roles, authorities and tokens")
 public class AdminController {
     private final AdminService adminService;
 
@@ -102,7 +104,7 @@ public class AdminController {
 
     @DeleteMapping("/tokens/{token}")
     public ResponseEntity<Object> deleteToken(@RequestHeader("Authorization") String token,
-            @PathVariable String tokenToDelete) {
+            @PathVariable("token") String tokenToDelete) {
         adminService.deleteToken(token, tokenToDelete);
         return new ResponseEntity<>("Token deleted successfully", HttpStatus.OK);
     }
