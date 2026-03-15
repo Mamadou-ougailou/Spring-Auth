@@ -1,6 +1,7 @@
 package demo.service;
 
 import demo.exception.UnauthorizedException;
+import demo.exception.ForbiddenException;
 import demo.model.Authority;
 import demo.model.Identity;
 import demo.model.Token;
@@ -111,7 +112,35 @@ public class AuthentificationService {
         Identity identity = token.getIdentity();
 
         if (!hasAccessToTargetService(identity, targetService)) {
-            throw new demo.exception.ForbiddenException("User not authorized for target service: " + targetService);
+            throw new ForbiddenException("User not authorized for target service: " + targetService);
         }
+    }
+
+    /**
+     * Validate the raw token and ensure the owner has the given role name (exact match, case-insensitive).
+     * Throws UnauthorizedException (401) when token is missing/invalid/expired and
+     * ForbiddenException (403) when the user lacks the required role.
+     */
+    @Transactional(readOnly = true)
+    public void validateTokenHasRole(String tokenValue, String requiredRole) {
+        if (tokenValue == null || tokenValue.isBlank()) {
+            throw new UnauthorizedException("Missing token");
+        }
+
+        Token token = tokenService.findValidToken(tokenValue);
+        Identity identity = token.getIdentity();
+
+        String required = requiredRole == null ? "" : requiredRole.trim().toUpperCase();
+        boolean has = identity.getCredentials().stream()
+                .map(c -> c.getName() == null ? "" : c.getName().trim().toUpperCase())
+                .anyMatch(r -> r.equals(required));
+
+        if (!has) {
+            throw new ForbiddenException("User lacks required role: " + requiredRole);
+        }
+    }
+
+    public void validateAdminToken(String tokenValue) {
+        validateTokenHasRole(tokenValue, "admin");
     }
 }
